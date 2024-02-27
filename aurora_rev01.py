@@ -9,17 +9,27 @@
 '''
 
 import requests,os,h5py,numpy
+
+#CONFIGURACION DE FOLDERY LINK DE EXPERIMENTO
 link   = 'http://sophy/status/'
 PATH   = "/DATA_RM/DATA" #PATH = "/media/soporte/DATA/PIURA/SOPHY/" 
 folder = 'Z_PPI_EL_5.0'
+
+#CONFIGURACION DE DESINCRONISMO
+threshold             = 60
+num_alturas_iniciales = 100 # Recuerda H0= -2 Km y Rmix = 5 Km  , dividimos 7km-> 7000 m. entre 60 metros de resolucion esto nos da 116 alturas
+cant_alt_consecutivas  = 30
 
 
 class Readsophy():
     def __init__(self):
         self.last_file = None
 
-    def setup(self,path_file):
+    def setup(self,path_file,threshold,num_alturas_iniciales,cant_alt_consecutivas):
         self.path_file = path_file
+        self.threshold             = threshold
+        self.num_alturas_iniciales = num_alturas_iniciales
+        self.cant_alt_consecutivas = cant_alt_consecutivas
         self.last_file = self.read_files(path_file=self.path_file)
     
     def read_files(self,path_file):
@@ -47,14 +57,59 @@ class Readsophy():
             print("***********************************************")
             print("ARR shape:",data_arr.shape)
             print("ARR shape:",data_arr)
+            return data_arr
+        
+    def detectar_desincronismo(self,arr , threshold, num_alturas_iniciales,cant_alt_consecutivas):
+        '''
+        Al inicio todo fue implementado en el metodo run de la clase Block360 jroproc_parameters.py
+        Los atributos de entrada son: dataOut.data_param[0,4,:,:] -> Reflectividad de un solo canal.
+        arr = dataOut.data_param[0,4,:,:] el shape de este arreglo debe ser los 360 angulos y las alturas
+        1. Arreglo de reflectividad
+        2. umbral_promedio, valor de reflectividad en los pulsos de tx.
+        3. num_alturas_iniciales: mayor al Rmix para detectar desincronismo.
+        4. cant_alt_consecutivas: cantidad de alturas consecutivas ancho de pulso
+        '''
+
+        print("-----------DESINCRONISMO - DETECCION ----------------------------")
+        print("Parametro Utilizado: Reflectividad")
+        print("arreglo Z       :",arr)
+        print("arr             :",arr.shape)
+        print("umbral_promedio :",threshold)
+        print("num_alturas_ini :",num_alturas_iniciales)
+
+        arr_data               = arr
+        prom_por_altura        = numpy.nanmean(arr_data,axis = 0)
+        print("Dimension de arr prom x altura:", prom_por_altura.shape)
+        import matplotlib.pyplot as plt
+        plt.plot(prom_por_altura)
+        plt.show()
+        alt_altas              = numpy.where(prom_por_altura> threshold)[0]
+        alt_consecutivas_altas = []
+        consecutivas_actual    = []
+
+        for altura in alt_altas:
+            if altura >= num_alturas_iniciales:
+                consecutivas_actual.append(altura)
+            else:
+                consecutivas_actual=[]
+            if len(consecutivas_actual)>cant_alt_consecutivas:
+                alt_consecutivas_altas.append(consecutivas_actual.copy())
+
+        return alt_consecutivas_altas
+
 
     def run(self):
-        filename = self.path_file+"/"+self.last_file
+        filename     = self.path_file+"/"+self.last_file
         print("dir_filename:",filename)
-        self.readAtrributes(filename)
-
-
-
+        arr          = self.readAtrributes(filename)
+        resultado    = self.detectar_desincronismo(arr                  = arr,
+                                                   threshold            = self.threshold,
+                                                   num_alturas_iniciales= self.num_alturas_iniciales,
+                                                   cant_alt_consecutivas= self.cant_alt_consecutivas)
+        if len(resultado)> 0:
+            print("\n [Desincronismo detectado] \n")
+        else:
+            print("\n Todo [OK] \n")
 
 
 response_status  = requests.get(link)
@@ -66,9 +121,13 @@ if response_status.status_code == 200:
     path_param= os.path.join(PATH,experiment,'param')
     path = os.path.join(path_param, folder)
     print("path        :",path)
+
     path = "/media/soporte/DATA/PIURA/SOPHY/PIU@2024-02-05T10-00-31/param-magic10/Z_PPI_EL_5.0"
+    threshold             = 60
+    num_alturas_iniciales = 100 # Recuerda H0= -2 Km y Rmix = 5 Km  , dividimos 7km-> 7000 m. entre 60 metros de resolucion esto nos da 116 alturas
+    cant_alt_consecutivas  = 30
     obj =Readsophy()
-    obj.setup(path_file=path)
+    obj.setup(path_file=path,threshold=threshold,num_alturas_iniciales=num_alturas_iniciales,cant_alt_consecutivas=cant_alt_consecutivas)
     obj.run()
 
 
