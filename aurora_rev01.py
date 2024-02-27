@@ -169,7 +169,7 @@ if response_status.status_code == 200:
     path_param= os.path.join(PATH,experiment,'param')
     path = os.path.join(path_param, folder)
     print("path        :",path)
-
+    # ESTA LINEA path es de prueba con la data real: /DATA_RM/DATA/PIU@2024-02-16T16-00-34/param/Z_PPI_EL_5.0/
     path = "/media/soporte/DATA/PIURA/SOPHY/PIU@2024-02-05T10-00-31/param-magic10/Z_PPI_EL_5.0"
     threshold             = 60
     num_alturas_iniciales = 100 # Recuerda H0= -2 Km y Rmix = 5 Km  , dividimos 7km-> 7000 m. entre 60 metros de resolucion esto nos da 116 alturas
