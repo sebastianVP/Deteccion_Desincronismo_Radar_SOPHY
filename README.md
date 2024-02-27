@@ -7,3 +7,6 @@ El programa se desarrolla en python. Las librerias a utilizar son:
 - python-telegram-bot
 
 Las pruebas las realizaremos haciendo primero la conexion vpn al radar. Se probara el control de esta tarea con crontab y puede que sea necesario el uso adicional de la libreria h5py.
+
+# 1 PRUEBA
+Vamos a realizar un programa ahora que integre los archivos desincronismo.py y test_selenium_4172.py
