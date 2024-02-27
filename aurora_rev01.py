@@ -80,9 +80,9 @@ class Readsophy():
         arr_data               = arr
         prom_por_altura        = numpy.nanmean(arr_data,axis = 0)
         print("Dimension de arr prom x altura:", prom_por_altura.shape)
-        import matplotlib.pyplot as plt
-        plt.plot(prom_por_altura)
-        plt.show()
+        #import matplotlib.pyplot as plt
+        #plt.plot(prom_por_altura)
+        #plt.show()
         alt_altas              = numpy.where(prom_por_altura> threshold)[0]
         alt_consecutivas_altas = []
         consecutivas_actual    = []
