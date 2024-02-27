@@ -10,6 +10,12 @@
 
 import requests,os,h5py,numpy
 
+from selenium.webdriver import Chrome
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+import time
+
 #CONFIGURACION DE FOLDERY LINK DE EXPERIMENTO
 link   = 'http://sophy/status/'
 PATH   = "/DATA_RM/DATA" #PATH = "/media/soporte/DATA/PIURA/SOPHY/" 
@@ -19,6 +25,45 @@ folder = 'Z_PPI_EL_5.0'
 threshold             = 60
 num_alturas_iniciales = 100 # Recuerda H0= -2 Km y Rmix = 5 Km  , dividimos 7km-> 7000 m. entre 60 metros de resolucion esto nos da 116 alturas
 cant_alt_consecutivas  = 30
+
+
+class Sirselenium():
+    def __init__(self):
+        self.driver = webdriver.Chrome()
+        self.driver.get("http://sophy/accounts/login/?next=/experiment/1/edit/")
+        self.driver.maximize_window()
+        time.sleep(1)
+
+    def slow_typing(self,element,text):
+        for character in text:
+            element.send_keys(character)
+            time.sleep(0.3)
+
+    def registro(self):
+        ci = self.driver.find_element(By.ID, 'id_username')
+        self.slow_typing(ci, 'developer')#71846355, syañez@igp.gob.pe # 43485084 yellyna
+        ci = self.driver.find_element(By.ID, 'id_password')
+        self.slow_typing(ci, 'developer9')#71846355, syañez@igp.gob.pe # 43485084 yellyna
+        time.sleep(2)
+    
+    def aceptar(self):
+        submit = self.driver.find_element(By.CSS_SELECTOR,"button[class='btn btn-primary']")
+        submit.click()
+        time.sleep(3)
+    
+    def restart(self):
+        self.driver.get("http://sophy/experiment/1/stop/")
+        time.sleep(15)
+        self.driver.get("http://sophy/experiment/1/start/")
+        time.sleep(3)
+
+    def run(self):
+        print("Working with Selenium")
+        self.registro()
+        self.aceptar()
+        #self.restart()
+        print("Restart Experiment[OK]")
+
 
 
 class Readsophy():
@@ -98,7 +143,7 @@ class Readsophy():
         return alt_consecutivas_altas
 
 
-    def run(self):
+    def run(self,obj_sir):
         filename     = self.path_file+"/"+self.last_file
         print("dir_filename:",filename)
         arr          = self.readAtrributes(filename)
@@ -108,6 +153,9 @@ class Readsophy():
                                                    cant_alt_consecutivas= self.cant_alt_consecutivas)
         if len(resultado)> 0:
             print("\n [Desincronismo detectado] \n")
+            SIR = obj_sir
+            SIR.run()
+
         else:
             print("\n Todo [OK] \n")
 
@@ -126,9 +174,10 @@ if response_status.status_code == 200:
     threshold             = 60
     num_alturas_iniciales = 100 # Recuerda H0= -2 Km y Rmix = 5 Km  , dividimos 7km-> 7000 m. entre 60 metros de resolucion esto nos da 116 alturas
     cant_alt_consecutivas  = 30
-    obj =Readsophy()
+    obj     = Readsophy()
     obj.setup(path_file=path,threshold=threshold,num_alturas_iniciales=num_alturas_iniciales,cant_alt_consecutivas=cant_alt_consecutivas)
-    obj.run()
+    obj_sir = Sirselenium()
+    obj.run(obj_sir=obj_sir)
 
 
 
