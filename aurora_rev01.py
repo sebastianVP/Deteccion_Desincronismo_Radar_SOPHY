@@ -6,6 +6,8 @@
 - Revision de archivos de reflectividad.
 - Implementacion de metodo de deteccion de desincronismo.
 - Reinicio de experimento usando el SIR Web.
+- Intalar selenium: pip install selenium==4.17.2
+- Linea 65 genera el restart desde el SIR.
 '''
 
 import requests,os,h5py,numpy
@@ -61,7 +63,7 @@ class Sirselenium():
         print("Working with Selenium")
         self.registro()
         self.aceptar()
-        #self.restart()
+        self.restart()
         print("Restart Experiment[OK]")
 
 
