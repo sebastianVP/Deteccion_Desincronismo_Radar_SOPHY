@@ -6,4 +6,4 @@ El programa se desarrolla en python. Las librerias a utilizar son:
 - selenium
 - python-telegram-bot
 
-Las pruebas las realizaremos haciendo primero la conexion vpn al radar.
+Las pruebas las realizaremos haciendo primero la conexion vpn al radar. Se probara el control de esta tarea con crontab y puede que sea necesario el uso adicional de la libreria h5py.
