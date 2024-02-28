@@ -18,15 +18,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import time
 
-#CONFIGURACION DE FOLDERY LINK DE EXPERIMENTO
-link   = 'http://sophy/status/'
-PATH   = "/DATA_RM/DATA" #PATH = "/media/soporte/DATA/PIURA/SOPHY/" 
-folder = 'Z_PPI_EL_5.0'
-
-#CONFIGURACION DE DESINCRONISMO
-threshold             = 60
-num_alturas_iniciales = 100 # Recuerda H0= -2 Km y Rmix = 5 Km  , dividimos 7km-> 7000 m. entre 60 metros de resolucion esto nos da 116 alturas
-cant_alt_consecutivas  = 30
 
 
 class Sirselenium():
@@ -161,25 +152,35 @@ class Readsophy():
         else:
             print("\n Todo [OK] \n")
 
+if __name__=="__main__":
 
-response_status  = requests.get(link)
-print(response_status)
-if response_status.status_code == 200:
-    experiment =  response_status.json()['name']
-    print("Name of Experiment:",experiment)
-    print("***********************************************")
-    path_param= os.path.join(PATH,experiment,'param')
-    path = os.path.join(path_param, folder)
-    print("path        :",path)
-    # ESTA LINEA path es de prueba con la data real: /DATA_RM/DATA/PIU@2024-02-16T16-00-34/param/Z_PPI_EL_5.0/
-    path = "/media/soporte/DATA/PIURA/SOPHY/PIU@2024-02-05T10-00-31/param-magic10/Z_PPI_EL_5.0"
+    #CONFIGURACION DE FOLDER Y LINK DE EXPERIMENTO
+    link   = 'http://sophy/status/'
+    PATH   = "/DATA_RM/DATA" #PATH = "/media/soporte/DATA/PIURA/SOPHY/" 
+    folder = 'Z_PPI_EL_5.0'
+
+    #CONFIGURACION DE DESINCRONISMO
     threshold             = 60
     num_alturas_iniciales = 100 # Recuerda H0= -2 Km y Rmix = 5 Km  , dividimos 7km-> 7000 m. entre 60 metros de resolucion esto nos da 116 alturas
     cant_alt_consecutivas  = 30
-    obj     = Readsophy()
-    obj.setup(path_file=path,threshold=threshold,num_alturas_iniciales=num_alturas_iniciales,cant_alt_consecutivas=cant_alt_consecutivas)
-    obj_sir = Sirselenium()
-    obj.run(obj_sir=obj_sir)
+
+    response_status  = requests.get(link)
+    print(response_status)
+    if response_status.status_code == 200:
+        experiment =  response_status.json()['name']
+        print("Name of Experiment:",experiment)
+        print("***********************************************")
+        path_param= os.path.join(PATH,experiment,'param')
+        path = os.path.join(path_param, folder)
+        print("path        :",path)
+        
+        # ESTA LINEA path es de prueba con la data real: /DATA_RM/DATA/PIU@2024-02-16T16-00-34/param/Z_PPI_EL_5.0/
+        path = "/media/soporte/DATA/PIURA/SOPHY/PIU@2024-02-05T10-00-31/param-magic10/Z_PPI_EL_5.0"
+
+        obj     = Readsophy()
+        obj.setup(path_file=path,threshold=threshold,num_alturas_iniciales=num_alturas_iniciales,cant_alt_consecutivas=cant_alt_consecutivas)
+        obj_sir = Sirselenium()
+        obj.run(obj_sir=obj_sir)
 
 
 
