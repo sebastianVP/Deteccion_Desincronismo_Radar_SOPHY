@@ -173,10 +173,10 @@ if __name__=="__main__":
         path_param= os.path.join(PATH,experiment,'param')
         path = os.path.join(path_param, folder)
         print("path        :",path)
-        
-        # ESTA LINEA path es de prueba con la data real: /DATA_RM/DATA/PIU@2024-02-16T16-00-34/param/Z_PPI_EL_5.0/
-        path = "/media/soporte/DATA/PIURA/SOPHY/PIU@2024-02-05T10-00-31/param-magic10/Z_PPI_EL_5.0"
 
+        # ESTA LINEA path es de prueba con la data real: /DATA_RM/DATA/PIU@2024-02-16T16-00-34/param/Z_PPI_EL_5.0/
+        #path = "/media/soporte/DATA/PIURA/SOPHY/PIU@2024-02-05T10-00-31/param-magic10/Z_PPI_EL_5.0"
+        path = "/DATA_RM/DATA/PIU@2024-02-16T16-00-34/param/Z_PPI_EL_5.0/"
         obj     = Readsophy()
         obj.setup(path_file=path,threshold=threshold,num_alturas_iniciales=num_alturas_iniciales,cant_alt_consecutivas=cant_alt_consecutivas)
         obj_sir = Sirselenium()
