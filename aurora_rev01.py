@@ -2,12 +2,12 @@
 '''
 - Busqueda de un directorio especifico
 - Lectura de archivos procesados.
-- Configurado para ejecutarse cada 15 minutos.
+- Debe configurarse para ejecutarse cada 15 minutos.
 - Revision de archivos de reflectividad.
 - Implementacion de metodo de deteccion de desincronismo.
 - Reinicio de experimento usando el SIR Web.
 - Intalar selenium: pip install selenium==4.17.2
-- Linea 65 genera el restart desde el SIR.
+- Linea 57 genera el restart desde el SIR.
 '''
 
 import requests,os,h5py,numpy
