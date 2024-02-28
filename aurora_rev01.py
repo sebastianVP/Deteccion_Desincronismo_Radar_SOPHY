@@ -18,9 +18,29 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import time
 
+import telepot
+
+class Ghost():
+
+    def __init__(self):
+        self.bot = telepot.Bot(token='5757197805:AAGGx88LXt1SZwH4Lycj8KLslzatsNisZc4')
+
+    def open(self):
+        bot_info = self.bot.getMe()
+        print(bot_info)
+
+    def message(self,chat_id,msg):
+        self.bot.sendMessage(chat_id,msg)
+
+    def run(self):
+        self.open()
+        chat_id  = -1002125490739 # Grupo telegram SOPHY
+        self.message(chat_id,'Desincronismo detectado SOPHY [RESTART EXPERIMENT]')
+
 
 
 class Sirselenium():
+
     def __init__(self):
         self.driver = webdriver.Chrome()
         self.driver.get("http://sophy/accounts/login/?next=/experiment/1/edit/")
@@ -136,7 +156,7 @@ class Readsophy():
         return alt_consecutivas_altas
 
 
-    def run(self,obj_sir):
+    def run(self,obj_sir,obj_tel):
         filename     = self.path_file+"/"+self.last_file
         print("dir_filename:",filename)
         arr          = self.readAtrributes(filename)
@@ -148,6 +168,8 @@ class Readsophy():
             print("\n [Desincronismo detectado] \n")
             SIR = obj_sir
             SIR.run()
+            GHOST=obj_tel
+            GHOST.run()
 
         else:
             print("\n Todo [OK] \n")
@@ -180,7 +202,8 @@ if __name__=="__main__":
         obj     = Readsophy()
         obj.setup(path_file=path,threshold=threshold,num_alturas_iniciales=num_alturas_iniciales,cant_alt_consecutivas=cant_alt_consecutivas)
         obj_sir = Sirselenium()
-        obj.run(obj_sir=obj_sir)
+        obj_tel = Ghost()
+        obj.run(obj_sir=obj_sir,obj_tel=obj_tel)
 
 
 
